@@ -1,66 +1,221 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Survey Results Dashboard — SurveyNexus{% endblock %}
 
 {% block content %}
+<div class="dashboard-container animate-fade-in">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="dashboard-title-area">
+            <h2>Survey Results Dashboard</h2>
+            <p>Welcome, {{ user.username }} &bull; Real-time analysis of student submissions</p>
+        </div>
 
-<h2>Survey Results Dashboard</h2>
+        <div class="dashboard-meta">
+            <span class="dashboard-date">
+                {{ current_date|date:"F j, Y" }}
+            </span>
+            <a href="{% url 'home' %}" class="btn btn-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                New Survey
+            </a>
+        </div>
+    </div>
 
-<p>
-    Welcome, {{ user.username }}
-</p>
+    <!-- 4 Analytics Metric Cards -->
+    <div class="stats-grid">
+        <!-- Card 1: Total Responses -->
+        <div class="stat-card animate-slide-up delay-1">
+            <div class="stat-top">
+                <span class="stat-label">Total Responses: {{ total_responses }}</span>
+                <div class="stat-icon stat-icon-violet">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-value">{{ total_responses }}</div>
+            <div class="stat-subtext">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Recorded submissions</span>
+            </div>
+        </div>
 
-<h3>
-    Total Responses: {{ total_responses }}
-</h3>
+        <!-- Card 2: Average Rating -->
+        <div class="stat-card animate-slide-up delay-2">
+            <div class="stat-top">
+                <span class="stat-label">Average Rating: {{ average_rating|floatformat:1 }}</span>
+                <div class="stat-icon stat-icon-cyan">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-value">{{ average_rating|floatformat:1 }} <span style="font-size: 1.1rem; color: var(--text-muted); font-weight: 500;">/ 5.0</span></div>
+            <div class="stat-subtext">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                <span>Satisfaction benchmark</span>
+            </div>
+        </div>
 
-<h3>
-    Average Rating:
-    {{ average_rating|floatformat:1 }}
-</h3>
+        <!-- Card 3: Top Technology -->
+        <div class="stat-card animate-slide-up delay-3">
+            <div class="stat-top">
+                <span class="stat-label">Top Technology</span>
+                <div class="stat-icon stat-icon-emerald">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-value" style="font-size: 1.85rem;">{{ most_popular_tech }}</div>
+            <div class="stat-subtext">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{{ most_popular_count }} community votes</span>
+            </div>
+        </div>
 
-<hr>
+        <!-- Card 4: Latest Activity -->
+        <div class="stat-card animate-slide-up delay-4">
+            <div class="stat-top">
+                <span class="stat-label">Latest Activity</span>
+                <div class="stat-icon stat-icon-indigo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-value" style="font-size: 1.4rem;">
+                {% if latest_response %}
+                    {{ latest_response.submitted_at|timesince }} ago
+                {% else %}
+                    No activity
+                {% endif %}
+            </div>
+            <div class="stat-subtext">
+                {% if latest_response %}
+                    <span>by {{ latest_response.name }}</span>
+                {% else %}
+                    <span>Awaiting first submission</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
-<h3>All Survey Responses</h3>
+    <!-- Filter and Search Controls -->
+    <div class="table-controls animate-slide-up">
+        <div class="search-box">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input type="text" id="tableSearchInput" placeholder="Search by student, email, or keywords..." class="form-input">
+        </div>
 
-<div class="table-wrapper">
-<table>
+        <div class="filter-group">
+            <select id="techFilterSelect" class="form-select filter-select" aria-label="Filter by technology">
+                <option value="ALL">All Technologies</option>
+                <option value="Python">Python</option>
+                <option value="Django">Django</option>
+                <option value="JavaScript">JavaScript</option>
+                <option value="Java">Java</option>
+                <option value="Other">Other</option>
+            </select>
+            <span class="results-counter">
+                Showing <strong id="visibleCount" style="color: var(--text-primary);">{{ total_responses }}</strong> of {{ total_responses }} responses
+            </span>
+        </div>
+    </div>
 
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Technology</th>
-            <th>Rating</th>
-            <th>Feedback</th>
-            <th>Submitted</th>
-        </tr>
-    </thead>
+    <!-- Dynamic Responses Table -->
+    <div class="table-card animate-slide-up">
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Email</th>
+                        <th>Technology</th>
+                        <th>Rating</th>
+                        <th>Feedback</th>
+                        <th>Submitted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for response in responses %}
+                        <tr class="survey-row" 
+                            data-name="{{ response.name|lower }}" 
+                            data-email="{{ response.email|lower }}" 
+                            data-tech="{{ response.technology }}" 
+                            data-feedback="{{ response.feedback|lower }}">
+                            <td class="cell-primary">
+                                {{ response.name }}
+                            </td>
+                            <td class="cell-email">
+                                {{ response.email }}
+                            </td>
+                            <td>
+                                <span class="badge badge-tech-{{ response.technology|lower }}">
+                                    {{ response.technology }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="rating-pill rating-{{ response.rating }}">
+                                    ★ {{ response.rating }}/5
+                                </span>
+                            </td>
+                            <td class="cell-feedback">
+                                {{ response.feedback }}
+                            </td>
+                            <td>
+                                {{ response.submitted_at|date:"M d, Y &bull; H:i" }}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr id="djangoEmptyRow">
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                    </div>
+                                    <h3>No survey responses yet</h3>
+                                    <p>Submissions will automatically stream into this dashboard once students submit the survey.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
 
-    <tbody>
-
-        {% for response in responses %}
-
-        <tr>
-            <td>{{ response.name }}</td>
-            <td>{{ response.email }}</td>
-            <td>{{ response.technology }}</td>
-            <td>{{ response.rating }}</td>
-            <td>{{ response.feedback }}</td>
-            <td>{{ response.submitted_at }}</td>
-        </tr>
-
-        {% empty %}
-
-        <tr>
-            <td colspan="6">
-                No survey responses yet.
-            </td>
-        </tr>
-
-        {% endfor %}
-
-    </tbody>
-
-</table>
+                    <!-- Dynamic Client-side Empty Row for search filter -->
+                    <tr id="emptyStateRow" style="display: none;">
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                                <h3>No matching responses found</h3>
+                                <p>Try adjusting your search keywords or technology filter.</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+{% endblock %}
 
+{% block extra_js %}
+<script src="{% static 'survey/js/dashboard.js' %}"></script>
 {% endblock %}

@@ -1,24 +1,128 @@
 {% extends 'base.html' %}
 
+{% block title %}Student Technology Survey — SurveyNexus{% endblock %}
+
 {% block content %}
+<!-- Hero Section -->
+<section class="hero-section animate-slide-up">
+    <h1 class="hero-title">
+        Your Voice. <span class="gradient-text">Your Insights.</span>
+    </h1>
 
-<h2>Student Technology Survey</h2>
+    <p class="hero-description">
+        Help benchmark the future of tech stacks. Share your preferred programming ecosystem, experience rating, and candid feedback in seconds.
+    </p>
 
-<p>
-    Please complete the survey below.
-    No login is required.
-</p>
+    <div class="hero-features">
+        <div class="hero-feature-item">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>Public &amp; Open Access</span>
+        </div>
+        <div class="hero-feature-item">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Takes Under 1 Minute</span>
+        </div>
+        <div class="hero-feature-item">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            <span>Secure &amp; Validated</span>
+        </div>
+    </div>
+</section>
 
-<form method="POST">
+<!-- Survey Form Card -->
+<div class="form-wrapper glass-card animate-slide-up delay-1">
+    <div class="form-header">
+        <h2>Student Technology Survey</h2>
+        <p>Please complete the survey below. No login is required.</p>
+    </div>
 
-    {% csrf_token %}
+    <form method="POST" class="survey-submission-form" novalidate>
+        {% csrf_token %}
 
-    {{ form.as_p }}
+        {% if form.non_field_errors %}
+            <div class="auth-error-box">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
 
-    <button type="submit">
-        Submit Survey
-    </button>
+        <!-- Name Field -->
+        <div class="form-group">
+            <label for="{{ form.name.id_for_label }}" class="form-label">Full Name</label>
+            {{ form.name }}
+            {% if form.name.errors %}
+                <ul class="errorlist">
+                    {% for error in form.name.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
 
-</form>
+        <!-- Email Field -->
+        <div class="form-group">
+            <label for="{{ form.email.id_for_label }}" class="form-label">Email Address</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <ul class="errorlist">
+                    {% for error in form.email.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
 
+        <!-- Technology Field -->
+        <div class="form-group">
+            <label for="{{ form.technology.id_for_label }}" class="form-label">Favourite Technology</label>
+            {{ form.technology }}
+            {% if form.technology.errors %}
+                <ul class="errorlist">
+                    {% for error in form.technology.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <!-- Rating Field -->
+        <div class="form-group">
+            <label for="{{ form.rating.id_for_label }}" class="form-label">Overall Experience Rating</label>
+            {{ form.rating }}
+            {% if form.rating.errors %}
+                <ul class="errorlist">
+                    {% for error in form.rating.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <!-- Feedback Field -->
+        <div class="form-group">
+            <label for="{{ form.feedback.id_for_label }}" class="form-label">Detailed Feedback &amp; Suggestions</label>
+            {{ form.feedback }}
+            {% if form.feedback.errors %}
+                <ul class="errorlist">
+                    {% for error in form.feedback.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-block">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+            Submit Survey
+        </button>
+    </form>
+</div>
 {% endblock %}

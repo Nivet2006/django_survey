@@ -1,134 +1,122 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Django Survey App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SurveyNexus — Modern Survey & Analytics Platform{% endblock %}</title>
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f3f5f9;
-            margin: 0;
-        }
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'survey/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'survey/css/animations.css' %}">
 
-        nav {
-            background: #243b67;
-            padding: 18px;
-            color: white;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin-right: 20px;
-        }
-
-        .container {
-            max-width: 850px;
-            margin: 30px auto;
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px #ddd;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        button {
-            background: #243b67;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .logout-form {
-            display: inline;
-        }
-
-        .logout-form button {
-            background: transparent;
-            padding: 0;
-            font: inherit;
-            text-decoration: underline;
-        }
-
-        .success {
-            color: green;
-            padding: 10px;
-        }
-
-        .errorlist {
-            color: red;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background: #e8edf6;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-    </style>
+    {% block extra_head %}{% endblock %}
 </head>
-
 <body>
+    <!-- Ambient Background Glows -->
+    <div class="ambient-glow-1 animate-pulse" aria-hidden="true"></div>
+    <div class="ambient-glow-2 animate-pulse" aria-hidden="true"></div>
 
-<nav>
-    <a href="{% url 'home' %}">Home</a>
+    <div class="app-layout">
+        <!-- Sticky Navigation Bar -->
+        <header class="site-nav">
+            <div class="nav-inner">
+                <a href="{% url 'home' %}" class="brand-link" aria-label="SurveyNexus Home">
+                    <span class="brand-name">SurveyNexus</span>
+                </a>
 
-    {% if user.is_authenticated %}
+                <!-- Mobile menu toggle -->
+                <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation menu" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
 
-        <a href="{% url 'results' %}">
-            Survey Results
-        </a>
+                <!-- Navigation items -->
+                <nav class="nav-actions" id="navActions">
+                    <a href="{% url 'home' %}" class="nav-link">Home</a>
 
-        <form method="post"
-              action="{% url 'logout' %}"
-              class="logout-form">
-            {% csrf_token %}
-            <button type="submit">Logout</button>
-        </form>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'results' %}" class="nav-link">Survey Results</a>
 
-    {% else %}
+                        <div class="nav-user-pill">
+                            <div class="nav-avatar">
+                                {{ user.username|make_list|first|upper }}
+                            </div>
+                            <span class="nav-username">{{ user.username }}</span>
+                        </div>
 
-        <a href="{% url 'login' %}">Login</a>
+                        <form method="post" action="{% url 'logout' %}" class="logout-form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-logout" title="Log out of your account">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                                Logout
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="nav-link">Login</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </header>
 
-    {% endif %}
-</nav>
+        <!-- Flash Toast Messages -->
+        {% if messages %}
+            <div class="toast-container" aria-live="polite">
+                {% for message in messages %}
+                    <div class="toast {% if message.tags == 'error' %}toast-error{% else %}toast-success{% endif %}" role="alert">
+                        <div class="toast-icon">
+                            {% if message.tags == 'error' %}
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            {% else %}
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            {% endif %}
+                        </div>
+                        <div class="toast-content">{{ message }}</div>
+                        <button type="button" class="toast-close-btn" aria-label="Close notification">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
 
-<div class="container">
+        <!-- Main Content Block -->
+        <main class="content-container">
+            {% block content %}{% endblock %}
+        </main>
 
-    {% for message in messages %}
-        <p class="success">{{ message }}</p>
-    {% endfor %}
+        <!-- Professional Footer -->
+        <footer class="site-footer">
+            <div class="content-container">
+                <div class="footer-inner">
+                    <div class="footer-brand">
+                        <span>Engineered with Django &amp; Modern UI</span>
+                    </div>
+                    <div class="footer-status">
+                        <span class="footer-status-dot"></span>
+                        <span>All Systems Operational</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
 
-    {% block content %}
-    {% endblock %}
-
-</div>
-
+    <!-- Scripts -->
+    <script src="{% static 'survey/js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

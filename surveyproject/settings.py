@@ -114,18 +114,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
-# SQLite database (default)
-
-DATABASES = { # added by user
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 STATIC_URL = 'static/'
 
-# Authentication settings - added by user
+# Authentication settings
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'results'
 LOGOUT_REDIRECT_URL = 'home'
